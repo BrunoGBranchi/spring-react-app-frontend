@@ -10,10 +10,12 @@ import PrivateRoute from './component/privateRoute';
 import Home from './pages/home';
 import Login from './pages/login';
 import { Container } from '@mui/material';
-
+import MeuAppBar from './component/appBar';
+import UsersListPage from './pages/usuarios/UsersListPage';
+import { Outlet } from 'react-router-dom';
 const App = () => {
 
-  const darkTheme = createTheme({
+  const theme = createTheme({
     palette: {
       mode: 'dark',
     },
@@ -21,17 +23,21 @@ const App = () => {
 
   return (
     <Container>
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      <Router>
-        <Routes>
-          <Route exact path='/' element={<PrivateRoute />}>
-            <Route exact path='/' element={<Home />} />
-          </Route>
-          <Route path='/login' element={<Login />} />
-        </Routes>
-      </Router>
-    </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <MeuAppBar></MeuAppBar>
+        <Router>
+          <Routes>
+            <Route path="/" element={<PrivateRoute />}>
+              <Route path="/" element={<Outlet />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/usuarios" element={<UsersListPage />} />
+              </Route>
+            </Route>
+            <Route path='/login' element={<Login />} />
+          </Routes>
+        </Router>
+      </ThemeProvider>
     </Container>
   );
 };
