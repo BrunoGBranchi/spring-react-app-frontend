@@ -13,11 +13,12 @@ import { Container } from '@mui/material';
 import MeuAppBar from './component/appBar';
 import UsersListPage from './pages/usuarios/UsersListPage';
 import { Outlet } from 'react-router-dom';
+import NovoUsuario from './pages/usuarios/novo';
 const App = () => {
 
   const theme = createTheme({
     palette: {
-      mode: 'dark',
+      mode: 'light',
     },
   });
 
@@ -32,6 +33,7 @@ const App = () => {
               <Route path="/" element={<Outlet />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/usuarios" element={<UsersListPage />} />
+                <Route path="/usuarios/novo" element={<NovoUsuario />} />
               </Route>
             </Route>
             <Route path='/login' element={<Login />} />

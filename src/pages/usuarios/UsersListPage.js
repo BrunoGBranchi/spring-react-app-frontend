@@ -9,13 +9,24 @@ import {
     TableHead,
     TableRow,
     IconButton,
+
 } from '@mui/material';
+import Button from '@mui/material/Button';
 import { Delete } from '@mui/icons-material';
+import FloatingAlert from '../../component/floatingAlert';
 const UsersListPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [users, setUsers] = useState([]);
+    const [open, setOpen] = React.useState(false);
+    const [message, setMessage] = useState('');
     const token = localStorage.getItem('token');
     useEffect(() => {
+        const savedMessage = localStorage.getItem('message');
+        if (savedMessage) {
+          setMessage(savedMessage);
+          setOpen(true);
+          localStorage.removeItem('savedMessage'); // remova a mensagem após ser exibida
+        }
         async function loadUsers() {
             const response = await fetch('/usuarios', {
                 headers: {
@@ -29,12 +40,12 @@ const UsersListPage = () => {
         }
         loadUsers();
         setIsLoading(false);
-    }, []);
-
+    }, [token]);
+    
     async function handleDelete(id) {
         if (window.confirm('Deseja realmente excluir o usuário?')) {
             try {
-                await fetch('/users/${id}', {
+                await fetch(`/users/${id}`, {
                     headers: {
                         method: 'DELETE',
                         Authorization: `Bearer ${token}`
@@ -46,6 +57,13 @@ const UsersListPage = () => {
             }
         }
     }
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        setOpen(false);
+      };
 
 
     return (
@@ -55,7 +73,9 @@ const UsersListPage = () => {
             ) : (
                 <div>
                     <h2>Listagem de Usuários</h2>
-                    <Link to="/users/create">Criar Usuário</Link>
+                    <Link to="/usuarios/novo"> 
+                        <Button color='success' variant="outlined">Criar Usuário</Button>
+                    </Link>
                     <TableContainer component={Paper}>
                         <Table aria-label="simple table">
                             <TableHead>
@@ -88,6 +108,7 @@ const UsersListPage = () => {
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    <FloatingAlert open={open} message={message} onClose={handleClose} />
                 </div>
             )
             }

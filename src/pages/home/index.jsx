@@ -1,38 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { DataGrid } from '@mui/x-data-grid';
+import React from "react";
 const Home = () => {
-  const [users, setUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const columns = [
-    { field: 'id', headerName: 'ID' },
-    { field: 'nome', headerName: 'First name', width: 200}
-  ];
-
-  const fetchUsers = async () => {
-    const token = localStorage.getItem('token');
-    const response = await fetch('/usuarios', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-    const data = await response.json();
-    setUsers(data);
-    setIsLoading(false);
-  }
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  const token = localStorage.getItem('token');
   return (
     <div>
-      {isLoading ? (
-        <p>Carregando...</p>
-      ) : (
-        <div>
-          <DataGrid rows={users} columns={columns} />
-        </div>
-
-      )
-      }
+      <h1>Rome peige</h1>
+      <p>Token: {token}</p>
     </div>
   )
 
