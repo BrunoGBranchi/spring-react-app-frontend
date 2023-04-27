@@ -9,6 +9,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Cookies from 'js-cookie';
 
 const Login = () => {
 
@@ -30,7 +31,8 @@ const Login = () => {
       body: JSON.stringify({ username, password })
     });
     const data = await response.json();
-    localStorage.setItem('token', data.token);
+    Cookies.set('token', data.token);
+    //localStorage.setItem('token', data.token);
     navigate('/');
   };
 

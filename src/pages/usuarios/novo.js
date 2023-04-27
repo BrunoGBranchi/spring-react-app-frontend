@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, FormControl, Box, Input, InputLabel, NativeSelect } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const NovoUsuario = () => {
     const [nome, setNome] = useState('');
@@ -8,7 +9,9 @@ const NovoUsuario = () => {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [perfis, setPerfis] = useState([]);
-    const token = localStorage.getItem('token');
+    const [showSnackbar, setShowSnackbar] = useState(false);
+    //const token = localStorage.getItem('token');
+    const token = Cookies.get('token');
     const navigate = useNavigate();
     const handleCreateUser =  async (event) => {
         event.preventDefault();
@@ -23,7 +26,6 @@ const NovoUsuario = () => {
         });
         if (response.status === 201) {
             const data = await response.json();
-            console.log('datadomeuzovo '+data.message);
             localStorage.setItem('message', data.message);
             navigate('/usuarios');
         }

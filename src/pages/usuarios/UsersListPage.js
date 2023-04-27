@@ -14,6 +14,7 @@ import {
 import Button from '@mui/material/Button';
 import { Delete } from '@mui/icons-material';
 import FloatingAlert from '../../component/floatingAlert';
+import NovoUsuario from './novo';
 const UsersListPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [users, setUsers] = useState([]);
@@ -23,9 +24,9 @@ const UsersListPage = () => {
     useEffect(() => {
         const savedMessage = localStorage.getItem('message');
         if (savedMessage) {
-          setMessage(savedMessage);
-          setOpen(true);
-          localStorage.removeItem('savedMessage'); // remova a mensagem após ser exibida
+            setMessage(savedMessage);
+            setOpen(true);
+            localStorage.removeItem('savedMessage'); // remova a mensagem após ser exibida
         }
         async function loadUsers() {
             const response = await fetch('/usuarios', {
@@ -41,7 +42,7 @@ const UsersListPage = () => {
         loadUsers();
         setIsLoading(false);
     }, [token]);
-    
+
     async function handleDelete(id) {
         if (window.confirm('Deseja realmente excluir o usuário?')) {
             try {
@@ -59,12 +60,21 @@ const UsersListPage = () => {
     }
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
-          return;
+            return;
         }
-    
-        setOpen(false);
-      };
 
+        setOpen(false);
+    };
+
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+
+    const handleSnackbarClose = () => {
+        setSnackbarMessage('');
+    };
+
+    const handleSnackbarOpen = (message) => {
+        setSnackbarMessage(message);
+    };
 
     return (
         <div>
@@ -73,9 +83,10 @@ const UsersListPage = () => {
             ) : (
                 <div>
                     <h2>Listagem de Usuários</h2>
-                    <Link to="/usuarios/novo"> 
+                    <Link to="/usuarios/novo">
                         <Button color='success' variant="outlined">Criar Usuário</Button>
                     </Link>
+                    <NovoUsuario handleSnackbarOpen={handleSnackbarOpen} />
                     <TableContainer component={Paper}>
                         <Table aria-label="simple table">
                             <TableHead>
@@ -108,7 +119,13 @@ const UsersListPage = () => {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <FloatingAlert open={open} message={message} onClose={handleClose} />
+                    <FloatingAlert
+                        message={snackbarMessage}
+                        severity="success"
+                        open={!!snackbarMessage}
+                        handleClose={handleSnackbarClose}
+                    />
+
                 </div>
             )
             }

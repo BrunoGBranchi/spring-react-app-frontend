@@ -12,7 +12,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-
+import Cookies from 'js-cookie';
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -35,7 +35,7 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    Cookies.remove('token');
     // redireciona o usuário para a página de login
     window.location.href = '/login';
   };
