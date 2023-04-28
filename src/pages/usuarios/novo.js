@@ -3,19 +3,17 @@ import { Button, FormControl, Box, Input, InputLabel, NativeSelect } from "@mui/
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
-const NovoUsuario = () => {
+const NovoUsuario = (props) => {
     const [nome, setNome] = useState('');
     const [login, setLogin] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [perfis, setPerfis] = useState([]);
-    const [showSnackbar, setShowSnackbar] = useState(false);
     //const token = localStorage.getItem('token');
     const token = Cookies.get('token');
     const navigate = useNavigate();
     const handleCreateUser =  async (event) => {
         event.preventDefault();
-        console.log(`Bearer ${token}`);
         const response = await fetch('/usuarios/novo', {
           method: 'POST',
           headers: { 
@@ -24,9 +22,12 @@ const NovoUsuario = () => {
         },
           body: JSON.stringify({ nome, login, senha, email, perfis })
         });
-        if (response.status === 201) {
+        if (response.status < 400) {
             const data = await response.json();
-            localStorage.setItem('message', data.message);
+            props.addMessage(data.message, response.status);
+            navigate('/usuarios');
+        } else {
+            props.addMessage(response.statusText, response.status);
             navigate('/usuarios');
         }
         

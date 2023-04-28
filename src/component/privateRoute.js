@@ -7,9 +7,8 @@ const PrivateRoute = ({ element: Component, ...rest }) => {
   //const token = localStorage.getItem('token');
   const token = Cookies.get('token');
   const isAuthenticated = !!token;
-  
-  useEffect(() => {
 
+  useEffect(() => {
     if (isAuthenticated) {
       const { exp } = jwt_decode(token);
       const expirationTime = exp * 1000; // em milissegundos
@@ -25,7 +24,7 @@ const PrivateRoute = ({ element: Component, ...rest }) => {
       window.location.href = '/login'; // redireciona para a tela de login
     }
   }, [isAuthenticated, token]);
-  
+
   if (isAuthenticated) {
     return <Outlet />;
   } else {

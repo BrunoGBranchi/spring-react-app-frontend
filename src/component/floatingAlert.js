@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
@@ -9,18 +9,8 @@ const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
   
-export default function FloatingAlert({ open, message, autoHideDuration = 6000, onClose, action }) {
-  const [isMessageShown, setIsMessageShown] = useState(false);
-
-  useEffect(() => {
-    const messageShown = localStorage.getItem('messageShown');
-    if (messageShown === message) {
-      setIsMessageShown(true);
-    } else {
-      setIsMessageShown(false);
-    }
-  }, [message]);
-
+export default function FloatingAlert({ open, message, autoHideDuration = 6000, onClose, action, errorCode }) {
+  var codigoErro = 400
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -40,15 +30,21 @@ export default function FloatingAlert({ open, message, autoHideDuration = 6000, 
       </IconButton>
     </React.Fragment>
   );
-
-  if (isMessageShown) {
-    return null;
+  if (errorCode < codigoErro) {
+    return (
+      <Snackbar sev open={open} autoHideDuration={autoHideDuration} onClose={handleClose} message={message} action={action || defaultAction}>
+           <Alert severity="success">{message}</Alert>   
+      </Snackbar>
+      
+    );
+  } else {
+    return (
+      <Snackbar sev open={open} autoHideDuration={autoHideDuration} onClose={handleClose} message={message} action={action || defaultAction}>
+           <Alert severity="error">{message}</Alert>   
+      </Snackbar>
+      
+    );
   }
-
-  return (
-    <Snackbar sev open={open} autoHideDuration={autoHideDuration} onClose={handleClose} message={message} action={action || defaultAction}>
-        <Alert severity="success">{message}</Alert>
-    </Snackbar>
     
-  );
+  
 }

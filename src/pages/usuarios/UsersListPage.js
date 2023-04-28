@@ -14,19 +14,19 @@ import {
 import Button from '@mui/material/Button';
 import { Delete } from '@mui/icons-material';
 import FloatingAlert from '../../component/floatingAlert';
-import NovoUsuario from './novo';
+import Cookies from 'js-cookie';
 const UsersListPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [users, setUsers] = useState([]);
     const [open, setOpen] = React.useState(false);
     const [message, setMessage] = useState('');
-    const token = localStorage.getItem('token');
+    const token = Cookies.get('token');
     useEffect(() => {
         const savedMessage = localStorage.getItem('message');
         if (savedMessage) {
             setMessage(savedMessage);
             setOpen(true);
-            localStorage.removeItem('savedMessage'); // remova a mensagem após ser exibida
+            localStorage.removeItem('message'); // remova a mensagem após ser exibida
         }
         async function loadUsers() {
             const response = await fetch('/usuarios', {
@@ -58,24 +58,6 @@ const UsersListPage = () => {
             }
         }
     }
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        setOpen(false);
-    };
-
-    const [snackbarMessage, setSnackbarMessage] = useState('');
-
-    const handleSnackbarClose = () => {
-        setSnackbarMessage('');
-    };
-
-    const handleSnackbarOpen = (message) => {
-        setSnackbarMessage(message);
-    };
-
     return (
         <div>
             {isLoading ? (
@@ -85,8 +67,7 @@ const UsersListPage = () => {
                     <h2>Listagem de Usuários</h2>
                     <Link to="/usuarios/novo">
                         <Button color='success' variant="outlined">Criar Usuário</Button>
-                    </Link>
-                    <NovoUsuario handleSnackbarOpen={handleSnackbarOpen} />
+                    </Link>                   
                     <TableContainer component={Paper}>
                         <Table aria-label="simple table">
                             <TableHead>
@@ -119,13 +100,6 @@ const UsersListPage = () => {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <FloatingAlert
-                        message={snackbarMessage}
-                        severity="success"
-                        open={!!snackbarMessage}
-                        handleClose={handleSnackbarClose}
-                    />
-
                 </div>
             )
             }
