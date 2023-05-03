@@ -11,7 +11,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Cookies from 'js-cookie';
 
-const Login = () => {
+const Login = (props) => {
 
   const theme = createTheme({
     palette: {
@@ -30,10 +30,16 @@ const Login = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
     });
+    if (response.status < 400) {
+      const data = await response.json();
+      Cookies.set('token', data.token);
+      //localStorage.setItem('token', data.token);
+      navigate('/');
+  } else {
     const data = await response.json();
-    Cookies.set('token', data.token);
-    //localStorage.setItem('token', data.token);
-    navigate('/');
+      props.addMessage(data.message, response.status);
+  }
+   
   };
 
   return (
@@ -53,7 +59,7 @@ const Login = () => {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign in
+              Bem-vindo!
             </Typography>
             <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
               <TextField
@@ -86,7 +92,7 @@ const Login = () => {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
+                Entrar
               </Button>
             </Box>
           </Box>

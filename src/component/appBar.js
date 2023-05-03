@@ -157,6 +157,9 @@ function ResponsiveAppBar() {
                   <Typography textAlign="center" onClick={handleLogout}>Sair</Typography>
                 </MenuItem>
               ))}
+              <MenuItem onClick={handleLogout}>
+                  <Typography textAlign="center">Sair</Typography>
+                </MenuItem>
             </Menu>
           </Box>
         </Toolbar>

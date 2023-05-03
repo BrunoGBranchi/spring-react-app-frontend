@@ -26,10 +26,9 @@ const App = () => {
       setOpen(true);
       localStorage.removeItem('message'); // remova a mensagem após ser exibida
     }
-  });
+  },[]);
 
   function addMessage(mensagem, errorCode) {
-    console.log('entronometodo'+mensagem+errorCode);
     setMessage(mensagem);
     setErrorCode(errorCode);
     setOpen(true);
@@ -62,7 +61,7 @@ const App = () => {
                 <Route path="/usuarios/novo" element={<NovoUsuario addMessage={addMessage}/>} />
               </Route>
             </Route>
-            <Route path='/login' element={<Login />} />
+            <Route path='/login' element={<Login addMessage={addMessage}/>} />
           </Routes>
         </Router>
         <FloatingAlert open={open} message={message} onClose={handleClose} errorCode={errorCode} />
