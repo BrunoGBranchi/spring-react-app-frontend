@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect, useState} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -19,7 +19,8 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
+  const [users, setUsers] = useState();
+  const token = Cookies.get('token');
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -34,6 +35,22 @@ function ResponsiveAppBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  useEffect(() => {
+    async function loadUsers() {
+      const response = await fetch('/usuarios/usuarioLogado', {
+        headers: {
+          method: 'GET',
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const data = await response.json();
+      console.log(data);
+      setUsers(data);
+    }
+    loadUsers();
+  }, [token]);
+
   const handleLogout = () => {
     Cookies.remove('token');
     // redireciona o usuário para a página de login
@@ -59,7 +76,7 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            APP DO JORGE
+            Bem-vindo {users.nome}
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -154,12 +171,11 @@ function ResponsiveAppBar() {
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
                   <Typography textAlign="center">{setting}</Typography>
-                  <Typography textAlign="center" onClick={handleLogout}>Sair</Typography>
                 </MenuItem>
               ))}
               <MenuItem onClick={handleLogout}>
-                  <Typography textAlign="center">Sair</Typography>
-                </MenuItem>
+                <Typography textAlign="center">Sair</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>
