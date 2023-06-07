@@ -15,18 +15,26 @@ import UsersListPage from './pages/usuarios/UsersListPage';
 import { Outlet } from 'react-router-dom';
 import NovoUsuario from './pages/usuarios/novo';
 import FloatingAlert from './component/floatingAlert';
+import Cookies from 'js-cookie';
 const App = () => {
+
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = useState('');
   const [errorCode, setErrorCode] = useState('');
+  const [tokenExistente, setTokenExistente] = useState(false);
+  const token = Cookies.get('token');
   useEffect(() => {
+    
     const savedMessage = localStorage.getItem('message');
     if (savedMessage) {
       setMessage(savedMessage);
       setOpen(true);
       localStorage.removeItem('message'); // remova a mensagem após ser exibida
     }
-  },[]);
+    setTokenExistente(token != null);
+
+
+  }, [token]);
 
   function addMessage(mensagem, errorCode) {
     setMessage(mensagem);
@@ -36,11 +44,11 @@ const App = () => {
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
-        return;
+      return;
     }
 
     setOpen(false);
-};
+  };
   const theme = createTheme({
     palette: {
       mode: 'dark',
@@ -51,17 +59,20 @@ const App = () => {
     <Container>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <MeuAppBar></MeuAppBar>
+        {tokenExistente &&
+          <MeuAppBar></MeuAppBar>
+        }
+
         <Router>
           <Routes>
             <Route path="/" element={<PrivateRoute />}>
               <Route path="/" element={<Outlet />}>
                 <Route path="/" element={<Home />} />
-                <Route path="/usuarios" element={<UsersListPage  />} />
-                <Route path="/usuarios/novo" element={<NovoUsuario addMessage={addMessage}/>} />
+                <Route path="/usuarios" element={<UsersListPage />} />
+                <Route path="/usuarios/novo" element={<NovoUsuario addMessage={addMessage} />} />
               </Route>
             </Route>
-            <Route path='/login' element={<Login addMessage={addMessage}/>} />
+            <Route path='/login' element={<Login addMessage={addMessage} />} />
           </Routes>
         </Router>
         <FloatingAlert open={open} message={message} onClose={handleClose} errorCode={errorCode} />

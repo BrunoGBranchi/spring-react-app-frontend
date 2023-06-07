@@ -36,7 +36,6 @@ const UsersListPage = () => {
                 }
             });
             const data = await response.json();
-            console.log(data);
             setUsers(data);
         }
         loadUsers();
@@ -66,7 +65,7 @@ const UsersListPage = () => {
                 <div>
                     <h2>Listagem de Usuários</h2>
                     <Link to="/usuarios/novo">
-                        <Button color='success' variant="outlined">Criar Usuário</Button>
+                        <Button color='success' variant="outlined"sx={{ mb: 2 }}>Criar Usuário</Button>
                     </Link>                   
                     <TableContainer component={Paper}>
                         <Table aria-label="simple table">

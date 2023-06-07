@@ -20,7 +20,6 @@ const PrivateRoute = ({ element: Component, ...rest }) => {
       }
 
     } else {
-      console.log('nao deu');
       window.location.href = '/login'; // redireciona para a tela de login
     }
   }, [isAuthenticated, token]);

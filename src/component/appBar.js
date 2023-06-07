@@ -7,20 +7,36 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import Cookies from 'js-cookie';
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
+const settings = [];
 function ResponsiveAppBar() {
+  const [menus, setMenus] = useState([]);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [users, setUsers] = useState();
+  const [users, setUsers] = useState({});
   const token = Cookies.get('token');
+
+
+  useEffect(() => {
+    async function loadUsers() {
+      const response = await fetch('/usuarios/usuarioLogado', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const data = await response.json();
+      setUsers(data);
+      setMenus(data.menus);
+    }
+    loadUsers();
+   
+  }, [token]);
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -32,24 +48,13 @@ function ResponsiveAppBar() {
     setAnchorElNav(null);
   };
 
+  const redirect = (url) => {
+      window.location.href = url;
+  };
+
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
-  useEffect(() => {
-    async function loadUsers() {
-      const response = await fetch('/usuarios/usuarioLogado', {
-        headers: {
-          method: 'GET',
-          Authorization: `Bearer ${token}`
-        }
-      });
-      const data = await response.json();
-      console.log(data);
-      setUsers(data);
-    }
-    loadUsers();
-  }, [token]);
 
   const handleLogout = () => {
     Cookies.remove('token');
@@ -57,10 +62,11 @@ function ResponsiveAppBar() {
     window.location.href = '/login';
   };
   return (
+    
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          
           <Typography
             variant="h6"
             noWrap
@@ -69,14 +75,13 @@ function ResponsiveAppBar() {
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
+              
+              fontWeight: 500,
               color: 'inherit',
               textDecoration: 'none',
             }}
           >
-            Bem-vindo {users.nome}
+            Home
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -108,14 +113,15 @@ function ResponsiveAppBar() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+              
+              {menus.map((menu) => (
+                <MenuItem key={menu.descricao} onClick={() => redirect(menu.rota)}>
+                  <Typography textAlign="center">{menu.descricao}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+          
           <Typography
             variant="h5"
             noWrap
@@ -125,8 +131,8 @@ function ResponsiveAppBar() {
               mr: 2,
               display: { xs: 'flex', md: 'none' },
               flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
+             
+              fontWeight: 500,
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
@@ -134,22 +140,34 @@ function ResponsiveAppBar() {
           >
             LOGO
           </Typography>
+
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+            {menus.map((menu) => (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
+                key={menu}
+                onClick={() => redirect(menu.rota)}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                {page}
+                {menu.descricao}
               </Button>
             ))}
           </Box>
-
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title="Clique para expandir">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              <Typography
+            variant="h6"
+            noWrap
+            component="a"
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+           {users.nome}
+          </Typography>
               </IconButton>
             </Tooltip>
             <Menu
@@ -169,8 +187,8 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem key={setting.nome} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">{setting.nome}</Typography>
                 </MenuItem>
               ))}
               <MenuItem onClick={handleLogout}>

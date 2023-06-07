@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -15,13 +14,12 @@ const Login = (props) => {
 
   const theme = createTheme({
     palette: {
-      mode: 'dark',
+      mode: 'light',
     },
   });
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -34,7 +32,7 @@ const Login = (props) => {
       const data = await response.json();
       Cookies.set('token', data.token);
       //localStorage.setItem('token', data.token);
-      navigate('/');
+      window.location.href = '/';
   } else {
     const data = await response.json();
       props.addMessage(data.message, response.status);
