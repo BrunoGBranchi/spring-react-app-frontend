@@ -16,6 +16,7 @@ import { Outlet } from 'react-router-dom';
 import NovoUsuario from './pages/usuarios/novo';
 import FloatingAlert from './component/floatingAlert';
 import Cookies from 'js-cookie';
+import PageNotFound from './pages/erros/pageNotFound';
 const App = () => {
 
   const [open, setOpen] = React.useState(false);
@@ -24,7 +25,7 @@ const App = () => {
   const [tokenExistente, setTokenExistente] = useState(false);
   const token = Cookies.get('token');
   useEffect(() => {
-    
+
     const savedMessage = localStorage.getItem('message');
     if (savedMessage) {
       setMessage(savedMessage);
@@ -56,7 +57,7 @@ const App = () => {
   });
 
   return (
-    <Container>
+    <Container maxWidth="lg">
       <ThemeProvider theme={theme}>
         <CssBaseline />
         {tokenExistente &&
@@ -71,6 +72,7 @@ const App = () => {
                 <Route path="/usuarios" element={<UsersListPage />} />
                 <Route path="/usuarios/novo" element={<NovoUsuario addMessage={addMessage} />} />
               </Route>
+              <Route path="*" element={<PageNotFound />} />
             </Route>
             <Route path='/login' element={<Login addMessage={addMessage} />} />
           </Routes>

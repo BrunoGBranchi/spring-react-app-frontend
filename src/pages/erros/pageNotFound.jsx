@@ -2,7 +2,7 @@ import React from "react";
 const Home = () => {
   return (
     <div>
-      <h1>Bem-vindo!</h1>
+      <h1>Ops! Pagina não encontrada</h1>
       
     </div>
   )
